@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>微指令计算器</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.13.1/css/all.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+    <h1><span class="fas fa-microchip" style="color:deeppink;"></span> 微指令计算器</h1>
+
+    <div class="card card-top">
+        <div class="row">
+            <div class="col col-10">
+                <textarea id="controlbits" placeholder="控制位" class="form-control"
+                          style="height: 100%; resize: none;"></textarea>
+            </div>
+            <div class="col col-2">
+                <input type="text" id="nextaddr" placeholder="下址(16进制)" class="form-control"
+                       style="margin-bottom: 8px;">
+                <button type="button" id="b2h" class="btn btn-block btn-primary" onclick="encode()">
+                    <span class="fas fa-arrow-down"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-bottom">
+        <div class="row">
+            <div class="col col-10">
+                <input type="text" id="hex" placeholder="16进制微代码" class="form-control">
+            </div>
+            <div class="col col-2">
+                <button type="button" id="h2b" class="btn btn-block btn-primary" onclick="decode()">
+                    <span class="fas fa-arrow-up"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-additional">
+        <div class="row">
+            <div class="col">
+                <div id="readme">
+                    <p>适用于 HQFC-BY 计算机组成原理仿真系统和 TEC-9 计算机组成原理实验系统的微指令翻译器，
+                        实现十六进制微指令代码表示和控制标志+下址表示的转换。</p>
+                    <p>支持的标志有：NC1, NC0, TJ, CN#, M, S3, S2, S1, S0, M1, LDDR1, WRD, LRW, CEL, ALU_BUS,
+                        RS_BUS, SW_BUS, IAR_BUS, LDER, M3, AR1_INC, LDAR1, LDIAR, M4, PC_INC, PC_ADD, LDPC,
+                        LDIR, INTC, INTS, P3, P2, P1, P0。逗号分隔，不区分大小写，下划线可忽略；字段存在表示该位为 1。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:16px;">
+        <p style="text-align:center;">
+            <a href="https://github.com/" target="_blank">
+                <span class="fab fa-github"></span>
+            </a>
+        </p>
+    </div>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.slim.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="ucode.js"></script>
+<script>
+    Number.prototype.pad = function (size, base) {
+        let s = this.toString(base)
+        while (s.length < size) {
+            s = "0" + s
+        }
+        return s
+    }
+
+    function encode() {
+        let bits = $('#controlbits').val().replace(/\s/g, '')
+        let next = parseInt($('#nextaddr').val(), 16)
+        let res = ucode.encode(bits, next)
+
+        let s = res === null ? 'error' : res.map(x => x.pad(2, 16)).join(' ').toUpperCase();
+        $('#hex').val(s)
+    }
+
+    function decode() {
+        let hex = $('#hex').val().replace(/\s/g, '')
+        let res = ucode.decode(hex)
+
+        if (res === null) {
+            $('#controlbits').val('error')
+            return
+        }
+
+        let bits = res.first.join(', ')
+        let next = res.second
+        $('#controlbits').val(bits)
+        $('#nextaddr').val(next)
+    }
+</script>
+</body>
+
+</html>
