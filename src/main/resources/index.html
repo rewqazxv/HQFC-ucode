@@ -76,10 +76,17 @@
     let enext = $('#nextaddr')
     let ehex = $('#hex')
 
+    ebits.on('input', () => {
+        ehex.val('')
+        let s = ebits.val().replace(/\s/g, '').replace(/,/g, ', ').trim();
+        ebits.val(s)
+    })
+
+    enext.on('input', () => {
+        ehex.val('')
+    })
+
     for (let i of [ebits, enext]) {
-        i.on('input', () => {
-            ehex.val('')
-        })
         i.on('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault()
