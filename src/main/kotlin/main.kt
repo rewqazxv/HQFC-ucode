@@ -6,12 +6,13 @@ val bits_all = arrayListOf(
     "INTS", "P3", "P2", "P1", "P0"
 )
 
-@ExperimentalStdlibApi
 @JsName("encode")
+@ExperimentalStdlibApi
 fun encode(control: String, next: Int): Array<Int>? {
     if (next > 0x3f) return null
 
-    val conset = control.split(",").map { it.trim().toUpperCase() }.toSet()
+    val conset = control.split(",").map { it.trim().toUpperCase() }.toMutableSet()
+    conset.remove("")
     var code = 0L
     for (i in bits_all) {
         if (conset.contains(i) || conset.contains(i.replace("_", ""))) {
