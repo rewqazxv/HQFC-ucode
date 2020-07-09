@@ -17,4 +17,7 @@ kotlin.target.browser {
     dceTask {
         keep("ucode.encode", "ucode.decode")
     }
+    distribution {
+        directory = File("$projectDir/docs/")
+    }
 }
