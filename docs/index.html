@@ -118,12 +118,11 @@
 
     function encode() {
         let bits = ebits.val().replace(/\s/g, '')
-        let next = parseInt(enext.val(), 16)
-        let res = isNaN(next) ? null : ucode.encode(bits, next)
+        let nexthex = enext.val()
+        let res = ucode.encode(bits, nexthex)
 
         let s = res === null ? 'error' : res.map(x => x.pad(2, 16)).join(' ')
         ehex.val(s)
-        enext.val(next.pad(2, 16))
     }
 
     function decode() {

@@ -6,7 +6,6 @@ val bits_all = arrayListOf(
     "INTS", "P3", "P2", "P1", "P0"
 )
 
-@JsName("encode")
 @ExperimentalStdlibApi
 fun encode(control: String, next: Int): Array<Int>? {
     if (next > 0x3f) return null
@@ -31,22 +30,17 @@ fun encode(control: String, next: Int): Array<Int>? {
     return res.reversed().toTypedArray()
 }
 
-@JsName("decode")
-fun decode(hex: String): Pair<Array<String>, Int>? {
-    var bits = try {
-        hex.toLong(16)
-    } catch (e: NumberFormatException) {
-        return null
-    }
-    val next = (bits and 0x3f).toInt()
+fun decode(hex: Long): Pair<Array<String>, Int> {
+    var code = hex
+    val next = (code and 0x3f).toInt()
 
-    bits = bits ushr 6
+    code = code ushr 6
     val control = ArrayList<String>()
     for (i in bits_all.reversed()) {
-        if ((bits and 1) == 1L) {
+        if ((code and 1) == 1L) {
             control.add(i)
         }
-        bits = bits ushr 1
+        code = code ushr 1
     }
 
     return Pair(control.reversed().toTypedArray(), next)
