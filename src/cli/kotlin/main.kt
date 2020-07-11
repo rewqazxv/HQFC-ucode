@@ -4,14 +4,14 @@ import java.io.File
 fun convert(sl: List<String>): Array<Array<Int>> {
     val res = Array(128) { Array(5) { 0 } }
     sl.forEachIndexed { i, s ->
-        if (s[0] != '#') {
-            val word = s.replace("\\s+".toRegex(), "").split(";").toMutableList()
-            word.remove("")
+        val word = s.replace("\\s+".toRegex(), "").split(";").toMutableList()
+        word.removeAll(listOf(""))
+        if (word.size != 0 && s[0] != '#') {
             if (word.size != 3) throw Exception("Format error at line ${i + 1}:\nRaw:\t$s\nParse:\t$word")
 
             val addr = word[0].toInt(16)
-            val control = word[1]
-            val next = word[2].toInt(16)
+            val next = word[1].toInt(16)
+            val control = word[2]
 
             val code =
                 encode(control, next) ?: throw Exception("Encode error at line ${i + 1}:\nRaw:\t$s\nParse:\t$word")
