@@ -1,5 +1,15 @@
 import java.io.File
 
+fun parseIntPlus(s: String): Int {
+    return if (s.startsWith("0x", true)) {
+        s.drop(2).toInt(16)
+    } else if (s.endsWith("h", true)) {
+        s.dropLast(1).toInt(16)
+    } else {
+        s.toInt()
+    }
+}
+
 @ExperimentalStdlibApi
 fun convert(sl: List<String>): Array<Array<Int>> {
     val res = Array(128) { Array(5) { 0 } }
@@ -9,8 +19,8 @@ fun convert(sl: List<String>): Array<Array<Int>> {
         if (word.size != 0 && s[0] != '#') {
             if (word.size != 3) throw Exception("Format error at line ${i + 1}:\nRaw:\t$s\nParse:\t$word")
 
-            val addr = word[0].toInt(16)
-            val next = word[1].toInt(16)
+            val addr = parseIntPlus(word[0])
+            val next = parseIntPlus(word[1])
             val control = word[2]
 
             val code =

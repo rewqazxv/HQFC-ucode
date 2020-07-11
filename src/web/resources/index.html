@@ -21,8 +21,8 @@
                           style="height: 100%; resize: none; text-transform:uppercase;"></textarea>
             </div>
             <div class="col col-2">
-                <input type="text" id="nextaddr" placeholder="下址(16进制)" class="form-control" maxlength="2"
-                       style="margin-bottom: 8px; text-transform:uppercase;">
+                <input type="text" id="nextaddr" placeholder="下址" class="form-control" maxlength="4"
+                       style="margin-bottom: 8px;">
                 <button type="button" id="b2h" class="btn btn-block btn-primary" onclick="encode()">
                     <span class="fas fa-arrow-down"></span>
                 </button>
@@ -84,6 +84,9 @@
 
     enext.on('input', () => {
         ehex.val('')
+        let s = enext.val().replace(/^0x/, '').replace(/[^0-9A-Fa-f]/g, '')
+        if (s !== '') s = '0x' + s.toUpperCase()
+        enext.val(s)
     })
 
     for (let i of [ebits, enext]) {
@@ -118,7 +121,7 @@
 
     function encode() {
         let bits = ebits.val().replace(/\s/g, '')
-        let nexthex = enext.val()
+        let nexthex = enext.val().replace(/^0x/, '')
         let res = ucode.encode(bits, nexthex)
 
         let s = res === null ? 'error' : res.map(x => x.pad(2, 16)).join(' ')
