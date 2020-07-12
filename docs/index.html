@@ -12,7 +12,7 @@
 
 <body>
 <div class="container">
-    <h1><span class="fas fa-microchip" style="color:deeppink;"></span> 微指令计算器</h1>
+    <h1><span class="fas fa-microchip" style="color:deeppink;"></span> 微指令翻译器</h1>
 
     <div class="card card-top">
         <div class="row">
@@ -49,11 +49,11 @@
             <div class="col">
                 <div id="readme">
                     <p>适用于 HQFC-BY 计算机组成原理仿真系统和 TEC-9 计算机组成原理实验系统的微指令翻译器，
-                        实现十六进制微指令代码表示和控制标志+下址表示的转换。</p>
+                        实现了微指令的十六进制代码表示和控制标志+下址表示的双向转换。</p>
                     <p>支持的标志有：NC1, NC0, TJ, CN#, M, S3, S2, S1, S0, M1, LDDR1, WRD, LRW, CEL, ALU_BUS,
                         RS_BUS, SW_BUS, IAR_BUS, LDER, M3, AR1_INC, LDAR1, LDIAR, M4, PC_INC, PC_ADD, LDPC,
-                        LDIR, INTC, INTS, P3, P2, P1, P0。逗号分隔，不区分大小写，下划线可忽略；字段存在表示该位为 1。
-                        十六进制微指令代码中可以有任意数量的空格分隔。</p>
+                        LDIR, INTC, INTS, P3, P2, P1, P0。逗号分隔，不区分大小写，下划线和#号可忽略；字段存在表示该位为 1。
+                        指令列表中可以有任意数量的空格分隔。</p>
                 </div>
             </div>
         </div>

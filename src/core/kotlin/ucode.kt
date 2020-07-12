@@ -1,20 +1,21 @@
-val bits_all = arrayListOf(
+private val con_format = { s: String -> s.toUpperCase().replace("[ _#]".toRegex(), "") }
+private val control_all = arrayListOf(
     "NC1", "NC0", "TJ", "CN#", "M", "S3", "S2", "S1", "S0",
     "M1", "LDDR1", "WRD", "LRW", "CEL", "ALU_BUS", "RS_BUS",
     "SW_BUS", "IAR_BUS", "LDER", "M3", "AR1_INC", "LDAR1",
     "LDIAR", "M4", "PC_INC", "PC_ADD", "LDPC", "LDIR", "INTC",
     "INTS", "P3", "P2", "P1", "P0"
-)
+).map(con_format)
 
 @ExperimentalStdlibApi
-fun encode(control: String, next: Int): Array<Int>? {
+fun encode(controls: String, next: Int): Array<Int>? {
     if (next > 0x3f) return null
 
-    val conset = control.split(",").map { it.trim().toUpperCase() }.toMutableSet()
-    conset.remove("")
+    val conset = controls.split(",").map { con_format(it) }.toMutableSet()
+    conset.removeAll(listOf(""))
     var code = 0L
-    for (i in bits_all) {
-        if (conset.contains(i) || conset.contains(i.replace("_", ""))) {
+    for (i in control_all) {
+        if (conset.contains(i)) {
             code = code or 1
         }
         code = code shl 1
@@ -36,7 +37,7 @@ fun decode(hex: Long): Pair<Array<String>, Int> {
 
     code = code ushr 6
     val control = ArrayList<String>()
-    for (i in bits_all.reversed()) {
+    for (i in control_all.reversed()) {
         if ((code and 1) == 1L) {
             control.add(i)
         }

@@ -14,17 +14,22 @@ fun parseIntPlus(s: String): Int {
 fun convert(sl: List<String>): Array<Array<Int>> {
     val res = Array(128) { Array(5) { 0 } }
     sl.forEachIndexed { i, s ->
-        val word = s.replace("\\s+".toRegex(), "").split(";").toMutableList()
-        word.removeAll(listOf(""))
-        if (word.size != 0 && s[0] != '#') {
-            if (word.size != 3) throw Exception("Format error at line ${i + 1}:\nRaw:\t$s\nParse:\t$word")
+        val words =
+            s.split("//")[0].replace("\\s+".toRegex(), "").split(";").toMutableList()
+        words.removeAll(listOf(""))
+        if (words.size != 0) { // else empty line (or comment)
+            if (words.size > 3) throw Exception("Extra fields at line ${i + 1}:\nRaw:\t$s\nParse:\t$words")
 
-            val addr = parseIntPlus(word[0])
-            val next = parseIntPlus(word[1])
-            val control = word[2]
+            val addr = parseIntPlus(words[0])
+            val next = parseIntPlus(words[1])
+            val control = try {
+                words[2]
+            } catch (e: IndexOutOfBoundsException) {
+                ""
+            }
 
             val code =
-                encode(control, next) ?: throw Exception("Encode error at line ${i + 1}:\nRaw:\t$s\nParse:\t$word")
+                encode(control, next) ?: throw Exception("Encode error at line ${i + 1}:\nRaw:\t$s\nParse:\t$words")
             res[addr] = code
         }
     }
@@ -42,6 +47,8 @@ fun fileio(input: File) {
     repeat(5) { i ->
         buffer[i] = res.map { it[i].toByte() }.toByteArray()
     }
+    // convert to big endian
+    buffer.reverse()
 
     repeat(5) {
         File(File(path), "${basename}_${it}.bin").writeBytes(buffer[it])
